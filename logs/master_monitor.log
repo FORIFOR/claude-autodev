@@ -42780,3 +42780,23 @@ Attempting to send notification via Claude Code MCP...
 📋 Basic completion criteria met. Running functionality validation...
 ⚠️  Project files exist but functionality validation failed
 📝 This indicates the project may not actually work as intended
+🔍 Checking completion criteria for: AITec最新流行整理ツー
+✅ RELEASE.md exists and has content
+✅ README.md exists and has content
+✅ Source code files found (      23 files)
+❌ Insufficient Git commits (2 < 3)
+✅ Completion indicator found
+📊 Completion score: 4/5
+📋 Basic completion criteria met. Running functionality validation...
+⚠️  Project files exist but functionality validation failed
+📝 This indicates the project may not actually work as intended
+🔍 Checking completion criteria for: AITec最新流行整理ツー
+✅ RELEASE.md exists and has content
+✅ README.md exists and has content
+✅ Source code files found (      23 files)
+❌ Insufficient Git commits (2 < 3)
+✅ Completion indicator found
+📊 Completion score: 4/5
+📋 Basic completion criteria met. Running functionality validation...
+⚠️  Project files exist but functionality validation failed
+📝 This indicates the project may not actually work as intended
