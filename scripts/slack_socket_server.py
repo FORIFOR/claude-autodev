@@ -89,6 +89,34 @@ def modify_project_spec(project_name, modification_text):
         print(f"Error modifying spec: {e}")
         return False
 
+def get_project_readme(project_name):
+    """プロジェクトのREADMEを取得"""
+    project_dir = os.path.join(DELIVERABLES_DIR, project_name)
+    if not os.path.exists(project_dir):
+        return None
+    
+    # README.mdを探す
+    readme_file = os.path.join(project_dir, "README.md")
+    if os.path.exists(readme_file):
+        try:
+            with open(readme_file, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            print(f"Error reading README: {e}")
+            return None
+    
+    # README.mdがない場合はSPEC.mdを試す
+    spec_file = os.path.join(project_dir, "SPEC.md")
+    if os.path.exists(spec_file):
+        try:
+            with open(spec_file, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            print(f"Error reading SPEC: {e}")
+            return None
+    
+    return None
+
 # メンション処理
 @app.event("app_mention")
 async def handle_app_mention(event, say, logger):
@@ -179,6 +207,21 @@ async def process_claude_command(command_text, say):
             else:
                 await say("使用方法: `claude modify project-name changes`")
         
+        elif text.startswith("claude describe ") or text.startswith("describe ") or text.startswith("/slack describe "):
+            # プロジェクトの説明を表示
+            project_name = text.replace("claude describe ", "").replace("describe ", "").replace("/slack describe ", "").strip()
+            if project_name:
+                readme_content = get_project_readme(project_name)
+                if readme_content:
+                    # Slackのメッセージ制限を考慮して長さを調整
+                    if len(readme_content) > 3000:
+                        readme_content = readme_content[:2900] + "\n\n... (以下省略)"
+                    await say(f"📄 プロジェクト `{project_name}` の説明:\n\n```\n{readme_content}\n```")
+                else:
+                    await say(f"❌ プロジェクト `{project_name}` のREADMEが見つかりませんでした。")
+            else:
+                await say("使用方法: `claude describe project-name` または `/slack describe project-name`")
+        
         elif text in ["claude projects", "projects", "claude status", "status"]:
             # プロジェクト一覧
             projects = get_active_projects()
@@ -194,6 +237,7 @@ async def process_claude_command(command_text, say):
 
 `claude new <名前> <アイデア>` - 新規プロジェクト作成
 `claude modify <名前> <変更内容>` - 仕様変更
+`claude describe <名前>` - プロジェクトのREADME表示
 `claude projects` - プロジェクト一覧
 `claude help` - このヘルプ
 
@@ -204,7 +248,8 @@ async def process_claude_command(command_text, say):
 
 例:
 `claude new todo-app TODOアプリをReactで作成`
-`claude modify todo-app ダークモード機能を追加`"""
+`claude modify todo-app ダークモード機能を追加`
+`claude describe todo-app` または `/slack describe todo-app`"""
             await say(help_message)
         
         else:
