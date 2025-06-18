@@ -46,6 +46,9 @@ while true; do
                 # LINE通知送信
                 "$SCRIPT_DIR/send_line_notification.sh" "$project_name"
                 
+                # Slack通知送信
+                python3 "$SCRIPT_DIR/send_slack_message.py" "$project_name" "プロジェクトが完了しました"
+                
                 # 完了リストに追加（重複チェック付き）
                 if ! grep -q "^$project_name$" "$LOGS_DIR/completed_projects.txt" 2>/dev/null; then
                     echo "$project_name" >> "$LOGS_DIR/completed_projects.txt"

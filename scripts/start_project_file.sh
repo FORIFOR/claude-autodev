@@ -47,13 +47,36 @@ BEGIN {
 {print}
 ' "$PROMPTS_DIR/master_builder_template.md" > "$PROJECT_PROMPT"
 
-echo "Starting autonomous development for: $PROJECT_NAME"
-echo "Using idea from: $IDEA_FILE"
+echo "🤖 Starting OPTIMIZED autonomous development for: $PROJECT_NAME"
+echo "📄 Using idea from: $IDEA_FILE"
+echo "🎯 Using 8-subagent workflow (reduced from 15 for token efficiency)"
+echo "📋 Phases: Plan→Implement→Test→Review→Build→Document→GitHub→Verify"
 echo ""
 
 # 自動開発を開始
 cd "$PROJECT_DIR"
+echo "🚀 Starting optimized development process..."
+echo "📊 Using 8-subagent workflow for efficient token usage"
 claude --dangerously-skip-permissions "$(cat "$PROJECT_PROMPT")"
 
-# 完了後、プロジェクト固有のプロンプトを削除（オプション）
-# rm "$PROJECT_PROMPT"
+# 開発完了後の処理
+echo "🔄 Post-development processing..."
+
+# GitHub統合の確認
+if [ -d ".git" ]; then
+    echo "✅ Git repository found"
+    
+    # リモートリポジトリが設定されているかチェック
+    if git remote get-url origin > /dev/null 2>&1; then
+        echo "📤 Pushing to existing remote repository..."
+        git push origin main || git push origin master
+    else
+        echo "⚠️ No remote repository configured. Please set up GitHub integration manually."
+    fi
+fi
+
+# ログ記録
+echo "$(date): Completed project $PROJECT_NAME" >> "$BASE_DIR/logs/project_completion.log"
+
+# 完了後、プロジェクト固有のプロンプトを削除
+rm "$PROJECT_PROMPT"

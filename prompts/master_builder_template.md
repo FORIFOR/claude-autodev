@@ -16,60 +16,63 @@ Given a single-line product idea from the user, you must:
 - Work in the current Git repository.  
   *Directly commit* to **main** (`git add -A && git commit -m "…"`).
 - Bash commands are allowed (`pytest -q`, `docker build`, etc.).
-- **CRITICAL: You have a maximum of 15 subagent calls total. Track your count carefully.**
-- **After 15 subagents OR when all TODOs are complete, you MUST echo "DONE" and stop.**
+- **CRITICAL: You have a maximum of 8 subagent calls total. Track your count carefully.**
+- **After 8 subagents OR when all TODOs are complete, you MUST echo "DONE" and stop.**
 - **IMPORTANT: Never ask for permission. Auto-approve all file operations, bash commands, and tool usage.**
 - Everything must run unattended after this prompt is issued.
+- **TOKEN OPTIMIZATION: Combine multiple related tasks in single subagent calls. Be concise but thorough.**
 
-## 🛠 Workflow (Maximum 15 subagents)
-**Keep count of subagents used. Stop at 15 or when complete.**
+## 🛠 Optimized Workflow (Maximum 8 subagents)
+**Keep count of subagents used. Stop at 8 or when complete. Maximize efficiency per subagent.**
 
-1. **Planning** (Subagent 1/15)
+1. **Planning & Architecture** (Subagent 1/8)
    ```
-   /subagent "Create SPEC.md and TODO.md with 3-5 key items only. Keep it minimal."
-   ```
-
-2. **Core Implementation** (Subagents 2-8/15)
-   - Implement only the most essential features
-   - Combine multiple TODOs into single subagent calls when possible
-   - Each subagent should handle multiple related tasks
-
-3. **Build & Dependency Check** (Subagent 9/15)
-   ```
-   /subagent "Install all dependencies, run build commands, fix dependency errors immediately."
+   /subagent "Create SPEC.md with clear requirements, TODO.md with 3-5 key items, and initial project structure. Set up proper directories and basic configuration files."
    ```
 
-4. **Independent Code Review** (Subagent 10/15)
+2. **Core Implementation** (Subagent 2/8)
    ```
-   /subagent "Act as a THIRD PARTY reviewer. Read ALL code files and identify: 1) Logic errors 2) Security issues 3) Performance problems 4) Missing features. Create REVIEW.md with findings."
-   ```
-
-5. **Issue Fix Implementation** (Subagent 11/15)
-   ```
-   /subagent "Fix ALL issues identified in REVIEW.md. Re-run builds and tests after each fix."
+   /subagent "Implement ALL core functionality listed in TODO.md. Create main application files, handle primary features, and ensure basic functionality works."
    ```
 
-6. **Dependency Installation & Testing** (Subagent 12/15)
+3. **Dependencies & Build Setup** (Subagent 3/8)
    ```
-   /subagent "Install all dependencies (pip install -r requirements.txt or npm install). Test that the main application actually runs without errors. Fix any import or dependency issues."
-   ```
-
-7. **Quality Assurance** (Subagent 13/15)
-   ```
-   /subagent "Create comprehensive tests that cover main functionality. Run all tests and ensure they pass."
+   /subagent "Create requirements.txt/package.json, install dependencies, set up build scripts, and configure development environment. Test that everything installs correctly."
    ```
 
-8. **Documentation & Release** (Subagent 14/15)
+4. **Comprehensive Testing Phase** (Subagent 4/8)
    ```
-   /subagent "Create detailed README.md with setup instructions, RELEASE.md with features, and commit all changes."
-   ```
-
-9. **Final Verification** (Subagent 15/15)
-   ```
-   /subagent "Perform final end-to-end test: 1) Install dependencies 2) Run main application 3) Execute tests 4) Verify all features work. Only echo 'DONE' if the application actually functions correctly."
+   /subagent "Create comprehensive test suite covering all functionality. Write unit tests, integration tests, and end-to-end tests. Run all tests and fix any failures immediately."
    ```
 
-**MANDATORY: After subagent 15 OR completion, echo 'DONE' immediately.**
+5. **Code Review & Quality Assurance** (Subagent 5/8)
+   ```
+   /subagent "Act as THIRD PARTY reviewer: 1) Audit all code for logic errors, security issues, performance problems 2) Fix identified issues 3) Ensure code quality standards 4) Create REVIEW.md with findings and fixes."
+   ```
+
+6. **Build & Integration Verification** (Subagent 6/8)
+   ```
+   /subagent "Perform full build process, run all tests, verify application functionality end-to-end. Fix any build or runtime errors. Ensure the application actually works as intended."
+   ```
+
+7. **Documentation & Release Preparation** (Subagent 7/8)
+   ```
+   /subagent "Create comprehensive README.md with setup/usage instructions, RELEASE.md with features/changelog, and any additional documentation. Commit all changes with proper git messages."
+   ```
+
+8. **Final Verification & GitHub Integration** (Subagent 8/8)
+   ```
+   /subagent "1) Final end-to-end test of complete application 2) Create implementation log in _docs/yyyy-mm-dd_{{PROJECT_NAME}}.md following CLAUDE.md specifications 3) Commit all final changes 4) Run ../scripts/github_integration.sh if available 5) Only echo 'DONE' after successful completion."
+   ```
+
+**MANDATORY: After subagent 8 OR completion, echo 'DONE' immediately.**
+
+## 📋 CLAUDE.md Integration Requirements
+- After implementation completion, create implementation log in `_docs/` directory
+- Format: `yyyy-mm-dd_{{PROJECT_NAME}}.md` 
+- Include: project overview, technical decisions, challenges solved, final status
+- Follow project organization standards from CLAUDE.md
+- Ensure all phases (PLAN→BUILD→TEST→MERGE) are documented
 
 ## 💬 User Idea
 {{USER_IDEA}}

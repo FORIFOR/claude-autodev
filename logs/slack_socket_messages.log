@@ -1,3 +1,21 @@
 2025-06-18T18:49:35.180853: Slack slash command from U08SL7KV9GB: /claude help
 2025-06-18T18:49:51.668155: Slack slash command from U08SL7KV9GB: /claude list
 2025-06-18T18:50:09.179750: Slack slash command from U08SL7KV9GB: /claude projects
+2025-06-18T19:16:06.927894: Slack slash command from U08SL7KV9GB: /claude help
+2025-06-18T19:16:41.987016: Slack slash command from U08SL7KV9GB: /claude describe perfect-keiba-AI
+2025-06-18T19:18:26.434144: Slack slash command from U08SL7KV9GB: /claude projects
+2025-06-18T19:19:59.120030: Slack slash command from U08SL7KV9GB: /claude help
+2025-06-18T19:47:55.165609: Slack slash command from U08SL7KV9GB: /claude help
+2025-06-18T19:48:08.910358: Slack slash command from U08SL7KV9GB: /claude help
+2025-06-18T19:48:28.134846: Slack slash command from U08SL7KV9GB: /claude projects
+2025-06-18T19:48:53.164742: Slack slash command from U08SL7KV9GB: /claude describe perfect-keiba-AI
+2025-06-18T19:50:59.869919: Slack slash command from U08SL7KV9GB: /claude describe `AITec最新流行整理ツール`
+2025-06-18T19:52:00.013611: Slack slash command from U08SL7KV9GB: /claude describe AITec最新流行整理ツール
+2025-06-18T19:53:56.120712: Slack slash command from U08SL7KV9GB: /claude help
+2025-06-18T20:08:22.869131: Slack slash command from U08SL7KV9GB: /claude help
+2025-06-18T20:09:13.390405: Slack slash command from U08SL7KV9GB: /claude showToDo
+2025-06-18T20:09:41.592114: Slack slash command from U08SL7KV9GB: /claude describe claude-autodev
+2025-06-18T20:10:18.380547: Slack slash command from U08SL7KV9GB: /claude describe perfect-keiba-AI
+2025-06-18T20:11:24.176875: Slack slash command from U08SL7KV9GB: /claude describe AITec最新流行整理ツール
+2025-06-18T22:25:05.854829: Slack slash command from U08SL7KV9GB: /claude describe perfect-keiba-AI
+2025-06-18T23:04:08.963411: Slack slash command from U08SL7KV9GB: /claude ccusage
