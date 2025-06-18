@@ -1,304 +1,266 @@
-# Claude Autodev - 完全自動開発システム
+# Claude Autodev - 一晩セルフ完結開発システム
 
-Claude Code の `/subagent` 機能を使った **無人で動作する開発システム** です。アイデア一つから完成品まで、寝ている間に自動で作り上げます。
+🤖 **Claude Code `/subagent` を使用した完全自動開発システム**
 
-## 🎯 このシステムでできること
+Claude Codeの`/subagent`機能を活用し、一晩で完全なプロジェクトを自動生成・完了まで管理するシステムです。マスター・チャイルドエージェント構造により、企画→実装→テスト→納品までの全工程を自動化します。
 
-- **完全無人開発**: アイデアを入力したら放置するだけ
-- **企画→実装→テスト→納品**: 全工程を自動化
-- **Git管理**: コミット履歴で開発過程を追跡可能
-- **プロジェクト管理**: 複数プロジェクトを分離して管理
+## 🌟 概要
 
-## 🏗 システム構成と仕組み
+### 🎯 **核心価値**
+- **完全自動化**: 人間の介入なしに一晩でプロジェクト完成
+- **確実な通知**: 複数プラットフォームでの冗長通知
+- **品質保証**: 5段階厳密完了判定
+- **双方向制御**: LINEからのリモートコマンド実行
 
-### 基本構造
+### 📋 **現在管理中プロジェクト**
+1. **AITec最新流行整理ツール** - Next.js + X API統合システム
+2. **perfect-keiba-AI** - ベイジアン・モンテカルロ競馬予測AI
+3. **claude-autodev** - 本自動開発システム
+
+## 🏗️ システム構成
+
 ```
 claude-autodev/
-├── scripts/              # 実行スクリプト（制御層）
-│   ├── run_once.sh          # 基本実行エンジン
-│   ├── create_project.sh    # プロジェクト生成器
-│   ├── start_project.sh     # 短いアイデア用（直接入力）
-│   └── start_project_file.sh # 長いアイデア用（ファイル入力）
-├── prompts/             # AI指示書（頭脳）
-│   ├── master_builder_template.md  # マスターテンプレート
-│   └── <project>_prompt.md        # プロジェクト別プロンプト（自動生成）
-├── ideas/               # アイデアファイル保管庫 🆕
-│   ├── example_idea_template.txt  # テンプレート
-│   └── x_repost_app.txt          # 実例
-└── deliverables/        # 成果物（出力層）
-    └── <project_name>/
-        ├── src/         # 生成されたソースコード
-        ├── tests/       # 自動生成テスト
-        ├── SPEC.md      # 自動作成された仕様書
-        └── RELEASE.md   # 完成品リリースノート
+├── scripts/           # 🤖 自動化スクリプト群
+│   ├── run_once.sh                   # 基本実行エンジン
+│   ├── start_project.sh              # プロジェクト開始
+│   ├── master_monitor.sh             # 完了監視システム
+│   ├── check_project_completion.sh   # 5段階厳密完了判定
+│   ├── validate_project_functionality.sh # 機能検証
+│   ├── send_line_message.py          # LINE通知
+│   ├── send_slack_message.py         # Slack通知
+│   └── line_webhook_server.py        # 双方向通信サーバー
+├── deliverables/      # 📁 完成プロジェクト格納庫 
+│   ├── AITec最新流行整理ツール/
+│   ├── perfect-keiba-AI/
+│   └── {new-projects}/
+├── prompts/           # 📝 エージェント指示テンプレート
+├── logs/              # 📊 実行ログとレポート
+├── config/            # ⚙️ 通知設定 (LINE/Slack)
+└── ideas/             # 💡 プロジェクトアイデア保管
 ```
 
-### 動作原理（Parent ⇄ Child エージェント）
+## 🚀 クリティカル機能
 
-```
-┌─────────────────┐    /subagent呼び出し    ┌─────────────────┐
-│   親エージェント    │ ────────────────────→ │  子エージェント1    │
-│  (Master Builder) │                      │   (Planner)     │
-│                 │ ←──── 仕様書返却 ────── │                 │
-└─────────────────┘                      └─────────────────┘
-         │
-         │ /subagent呼び出し
-         ▼
-┌─────────────────┐    実装完了報告    ┌─────────────────┐
-│   子エージェント2   │ ────────────────→ │   子エージェント3   │
-│  (Implementer)  │                  │    (Tester)     │
-└─────────────────┘                  └─────────────────┘
-```
-
-1. **親エージェント（Master Builder）**: 全体統制・進行管理
-2. **子エージェント（Subagents）**: 特定タスク実行（仕様策定・実装・テスト等）
-3. **状態管理**: ファイルシステム + Git コミットで永続化
-4. **終了制御**: 最大15子エージェント制限で無限ループ防止
-
-## 📋 セットアップ手順（初心者向け）
-
-### 必要なもの
-- Claude CLI （`brew install claude` または `pip install claude`）
-- Git
-- macOS/Linux 環境
-
-### Step 1: システムの準備
+### 1. **自動プロジェクト実行**
 ```bash
-# 1. プロジェクトディレクトリに移動
-cd /Users/horioshuuhei/Projects/claude-autodev
+# 新規プロジェクト開始
+./scripts/start_project.sh "project-name" "project-description"
 
-# 2. スクリプトに実行権限を付与
-chmod +x scripts/*.sh
+# アイデアファイルから開始
+./scripts/start_project_file.sh "project-name" "ideas/project.txt"
 ```
 
-### Step 2: 新規プロジェクト作成
+### 2. **完了監視システム**
 ```bash
-# プロジェクト名を指定して作成
-cd scripts
-./create_project.sh my-web-app
+# バックグラウンド監視開始
+./scripts/master_monitor.sh &
 ```
 
-### Step 3: アイデアの設定
+**5段階厳密完了判定:**
+1. ✅ 必須ファイル存在確認
+2. ✅ 動作可能性検証
+3. ✅ 依存関係解決
+4. ✅ テスト実行成功
+5. ✅ ビルド成功
+
+### 3. **マルチプラットフォーム通信システム**
+
+#### 📱 **LINE Bot (Webhook + Socket通信)**
+- **双方向通信対応**: `/create`, `/modify`, `/list`, `/help`
+- **通知システム**: プロジェクト完了時の自動通知
+- **通信方式**: LINE Messaging API (Webhook)
+- **実行サーバー**: `line_webhook_server.py` (Port 5001)
+
+#### 💬 **Slack Bot (Socket Mode通信)**
+- **双方向通信対応**: `claude new`, `claude modify`, `claude projects`, `claude help`
+- **通信方式**: Socket Mode (WebSocket接続、Request URL不要)
+- **実行サーバー**: `slack_socket_server.py` (バックグラウンド)
+- **対応形式**: 
+  - @mention: `@Claude Autodev claude help`
+  - DM: `claude new project-name description`
+  - スラッシュコマンド: `/claude projects`
+
+#### 🔔 **完了通知システム**
+- **自動プロジェクト監視**: 30秒間隔での完了チェック
+- **厳密完了判定**: 5段階検証 + 機能テスト
+- **マルチチャンネル通知**: LINE + Slack + macOS同時送信
+- **重複防止**: 完了済みプロジェクトの再通知回避
+
+## ⚙️ 重要設定
+
+### LINE Bot設定
 ```bash
-# プロンプトファイルを編集
-code ../prompts/master_builder_prompt.md
-# または
-vim ../prompts/master_builder_prompt.md
+# Webhook Server (双方向通信)
+./scripts/line_webhook_server.py  # Port 5001
+
+# ngrok tunnel (外部アクセス)
+ngrok http 5001
 ```
 
-ファイル内の `<<<USER_IDEA>>>` を実際のアイデアに置換：
-```markdown
-## 💬 User Idea
-家計簿アプリを Python FastAPI + SQLite で作りたい
+### Slack Bot設定
+```json
+// config/slack_config.json (通知のみ)
+{
+  "webhook_url": "https://hooks.slack.com/services/...",
+  "bot_name": "Claude Autodev Bot"
+}
+
+// config/slack_bidirectional_config.json (双方向通信)
+{
+  "bot_token": "xoxb-...",
+  "signing_secret": "...",
+  "commands": {
+    "new": "claude new <project-name> <description>",
+    "modify": "claude modify <project-name> <changes>",
+    "projects": "claude projects",
+    "help": "claude help"
+  }
+}
 ```
 
-### Step 4: 自動開発の実行
-
-#### 方法1: 短いアイデアの場合（ワンコマンド実行）
+### Slack Socket Mode設定
 ```bash
-# アイデアを直接指定して実行
-./start_project.sh "my-todo-app" "TODOアプリをReactとFirebaseで作成"
+# Socket Mode (WebSocket接続、Request URL不要)
+export SLACK_BOT_TOKEN="YOUR_SLACK_BOT_TOKEN"
+export SLACK_APP_TOKEN="YOUR_SLACK_APP_TOKEN"
+
+# 仮想環境とサーバー起動
+source slack_socket_env/bin/activate
+python3 scripts/slack_socket_server.py  # バックグラウンド実行
+
+# ⚠️ 重要: Socket ModeはRequest URL設定不要（WebSocket接続）
 ```
 
-#### 方法2: 長い・詳細なアイデアの場合（ファイル指定）🆕
+### プロジェクト完了判定
 ```bash
-# 1. アイデアファイルを作成
-vim ../ideas/my_detailed_app.txt
+# 厳密完了チェック
+./scripts/check_project_completion.sh "project-name"
 
-# 2. ファイルを指定して実行
-./start_project_file.sh "my-app" "../ideas/my_detailed_app.txt"
+# 機能検証
+./scripts/validate_project_functionality.sh "project-name"
 ```
 
-#### 方法3: 従来の方法（プロンプトファイル編集）
+## 🔄 実行フロー
+
+### プロジェクト作成〜完了通知までの完全自動化フロー
+
+```mermaid
+graph TD
+    A[👤 ユーザー] --> |LINE/Slack| B[📱 双方向通信システム]
+    B --> |コマンド解析| C[🤖 Claude Autodev]
+    C --> |プロジェクト作成| D[📁 deliverables/新規フォルダ]
+    D --> E[🚀 Claude Code実行]
+    E --> F[👨‍💻 Master Agent起動]
+    F --> G[🔧 Subagent呼び出し]
+    G --> H[💻 実装・テスト・ビルド]
+    H --> I{🔍 完了判定}
+    I --> |監視継続| J[⏰ 30秒待機]
+    J --> I
+    I --> |完了検出| K[✅ 5段階厳密検証]
+    K --> L[📊 機能テスト実行]
+    L --> M[📝 完了レポート生成]
+    M --> N[🔔 マルチプラットフォーム通知]
+    N --> O[📱 LINE通知]
+    N --> P[💬 Slack通知]  
+    N --> Q[🖥️ macOS通知]
+    O --> R[👤 ユーザーに完了報告]
+    P --> R
+    Q --> R
+```
+
+### 🔄 **通信フロー詳細**
+
+#### 1. **受信 → 処理 → 送信**
+```
+LINE/Slack → Webhook/Socket → コマンド解析 → プロジェクト作成 → 実行開始通知
+```
+
+#### 2. **監視 → 検証 → 通知**
+```
+master_monitor.sh → 完了判定 → 機能検証 → 通知トリガー → マルチチャンネル送信
+```
+
+#### 3. **双方向制御コマンド**
+- **プロジェクト作成**: `claude new todo-app Reactでタスク管理`
+- **仕様変更**: `claude modify todo-app ダークモード追加`
+- **進捗確認**: `claude projects`
+- **ヘルプ**: `claude help`
+
+## 📊 監視・ログ
+
+### 重要ログファイル
+- `logs/master_monitor.log` - 監視システムログ
+- `logs/notifications.log` - 通知履歴
+- `logs/line_messages.log` - LINE双方向通信ログ
+- `logs/completed_projects.txt` - 完了プロジェクト一覧
+
+### レポート自動生成
+- `logs/reports/{project}_completion_report.md`
+- プロジェクト概要・技術スタック・成果物まとめ
+
+## 🛠️ 運用コマンド
+
+### 基本操作
 ```bash
-# プロンプトファイルを編集してから実行
-./run_once.sh ../deliverables/my-web-app ../prompts/master_builder_prompt.md
+# システム起動
+./scripts/master_monitor.sh &
+
+# 新規プロジェクト
+./scripts/start_project.sh "app-name" "description"
+
+# 通知テスト
+./scripts/send_line_notification.sh "test-project"
+./scripts/send_slack_message.py test
 ```
 
-### Step 5: 結果の確認
+### 双方向通信サーバー起動
 ```bash
-# 生成されたプロジェクトを確認
-cd ../deliverables/my-web-app
-ls -la
+# LINE双方向通信 (Port 5001)
+python3 scripts/line_webhook_server.py &
 
-# 開発履歴を確認
-git log --oneline
+# Slack Socket Mode通信 (WebSocket)
+source slack_socket_env/bin/activate
+python3 scripts/slack_socket_server.py &
 
-# アプリケーションを実行
-python src/main.py  # または生成された実行ファイル
+# ngrok tunnels  
+ngrok http 5001  # LINE用のみ（Slack Socket ModeはWebSocket接続でngrok不要）
 ```
 
-## 🔧 高度な使い方
-
-### 複数プロジェクトの並列実行（改良版 ✨）
+### メンテナンス
 ```bash
-# ターミナル1
-./start_project.sh "web-app" "ECサイトをNext.jsとStripeで作成"
+# ログクリア
+rm -f logs/*.log
 
-# ターミナル2 
-./start_project.sh "mobile-app" "天気予報アプリをReact Nativeで作成"
+# 完了リストリセット
+rm -f logs/completed_projects.txt
 
-# ターミナル3
-./start_project.sh "api-service" "REST APIをFastAPIとPostgreSQLで作成"
+# 双方向通信サーバー再起動
+pkill -f line_webhook_server
+pkill -f slack_socket_server
+python3 scripts/line_webhook_server.py &                 # Port 5001
+source slack_socket_env/bin/activate && python3 scripts/slack_socket_server.py &  # Socket Mode
 ```
 
-**メリット**：
-- プロンプトファイルの編集不要
-- プロジェクトごとに独立したプロンプトファイルを自動生成
-- 何個でも同時実行可能
+## 🔧 トラブルシューティング
 
-### バックグラウンド実行（夜間放置）
-```bash
-# nohupで実行してログ保存
-nohup ./run_once.sh ../deliverables/myapp ../prompts/master_builder_prompt.md > ../logs/myapp.log 2>&1 &
+### 通知が来ない
+1. `ps aux | grep master_monitor` で監視プロセス確認
+2. `tail -f logs/master_monitor.log` でログ確認
+3. 通知設定確認: `./scripts/send_line_notification.sh test`
 
-# 進捗確認
-tail -f ../logs/myapp.log
-```
+### プロジェクトが完了しない
+1. 完了判定基準確認: `./scripts/check_project_completion.sh project-name`
+2. Claude Code実行権限: `--dangerously-skip-permissions`フラグ
+3. 手動完了マーク: `echo "project-name" >> logs/completed_projects.txt`
 
-### プロンプトのカスタマイズ
-プロンプトファイルを複製して用途別に作成：
-```bash
-cp ../prompts/master_builder_prompt.md ../prompts/web_app_prompt.md
-cp ../prompts/master_builder_prompt.md ../prompts/api_prompt.md
-```
+## 🚨 重要注意事項
 
-## 🚨 トラブルシューティング
+1. **Git依存**: 唯一の外部依存関係
+2. **Claude Code必須**: `/subagent`機能が核心
+3. **15回制限**: 無限ループ防止のための安全装置
+4. **権限設定**: `--dangerously-skip-permissions`フラグ必要
 
-### 権限エラーが出る場合
-```bash
-# スクリプトに実行権限を付与
-chmod +x scripts/*.sh
+---
 
-# Claude CLIの権限確認
-claude --help | grep permission
-```
-
-### 無限ループで終わらない場合
-- システムは最大15子エージェント制限済み
-- 強制停止: `Ctrl+C`
-- ログ確認: プロジェクトディレクトリ内のファイル変更を監視
-
-### 生成コードが動かない場合
-```bash
-# 依存関係をインストール
-cd deliverables/myapp
-pip install -r requirements.txt  # Python の場合
-npm install                      # Node.js の場合
-```
-
-## 📊 成果物の構成
-
-開発完了後の `deliverables/<project_name>/` 構成：
-```
-my-web-app/
-├── .git/                 # Git履歴（開発過程の記録）
-├── .gitignore           # 自動生成
-├── src/                 # メインソースコード
-│   ├── main.py
-│   ├── models/
-│   └── api/
-├── tests/               # 自動生成テスト
-│   ├── test_main.py
-│   └── test_api.py
-├── requirements.txt     # 依存関係
-├── SPEC.md             # 詳細仕様書
-├── TODO.md             # 完了済みタスクリスト
-├── README.md           # プロジェクト説明
-└── RELEASE.md          # リリースノート
-```
-
-## 💡 効果的な使い方のコツ
-
-1. **具体的なアイデアを書く**: 「ECサイト」より「商品登録・決済機能付きECサイト」
-2. **技術スタックを指定**: 「Python FastAPI + PostgreSQL + React」
-3. **シンプルに始める**: 最初は小さな機能から
-4. **結果を確認してから次へ**: 生成されたコードをレビューしてから次のプロジェクト
-
-このシステムで、一晩でMVPレベルのアプリケーションが完成します！
-
-## 🎛️ マスターモニターシステム（NEW! 🚀）
-
-### 自動監視・通知機能
-プロジェクトの完了を自動監視し、LINE通知でお知らせします。
-
-#### 起動方法
-```bash
-cd scripts
-./start_master_monitor.sh
-```
-
-#### 機能
-- 🔍 **プロジェクト完了の自動検知**
-- 📱 **LINE通知の自動送信**
-- 📊 **完了レポートの自動生成**
-- 📋 **開発統計の自動収集**
-
-#### 通知内容例
-```
-🎉 プロジェクト完了通知
-
-📋 プロジェクト: my-todo-app
-⏰ 完了時刻: 2024/06/15 14:30
-📁 生成ファイル数: 25
-📖 README: ✅
-🧪 テスト: ✅
-
-🔗 パス: deliverables/my-todo-app/
-```
-
-#### マスターモニターの3つの実行モード
-```bash
-# 1. フォアグラウンド実行（監視画面表示）
-./start_master_monitor.sh → 1を選択
-
-# 2. バックグラウンド実行（デーモン化）
-./start_master_monitor.sh → 2を選択
-
-# 3. テスト実行（既存プロジェクトで確認）
-./start_master_monitor.sh → 3を選択
-```
-
-### 完全自動運用の例
-```bash
-# ターミナル1: マスターモニター起動（バックグラウンド）
-./start_master_monitor.sh
-
-# ターミナル2-4: 複数プロジェクトを同時実行
-./start_project.sh "web-app" "ECサイト作成"
-./start_project.sh "mobile-app" "天気アプリ作成"  
-./start_project.sh "api-service" "REST API作成"
-
-# → 各プロジェクト完了時にLINE通知が自動送信される
-```
-
-### 📱 双方向LINE通信（NEW! ✨）
-
-#### LINE Webhook Server 起動
-```bash
-cd scripts
-./start_line_server.sh
-```
-
-#### LINEからプロジェクト操作
-```
-# 新規プロジェクト作成
-/create todo-app TODOアプリをReactで作成してください
-
-# 既存プロジェクトの仕様変更
-/modify todo-app ダークモード機能を追加してください
-
-# プロジェクト一覧確認
-/list
-
-# ヘルプ
-/help
-```
-
-#### 完了判定の改善
-以下の5つの条件中4つ以上を満たした場合のみ「完了」と判定：
-- ✅ RELEASE.md が存在し内容がある
-- ✅ README.md が存在し内容がある  
-- ✅ src/ にコードファイルが存在
-- ✅ Git コミットが3つ以上
-- ✅ "DONE" キーワードが含まれている
+*🤖 Generated with Claude Code - Self-Contained Overnight Development System*

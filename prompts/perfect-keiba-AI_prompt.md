@@ -49,9 +49,9 @@ Given a single-line product idea from the user, you must:
    /subagent "Fix ALL issues identified in REVIEW.md. Re-run builds and tests after each fix."
    ```
 
-6. **Final Validation** (Subagent 12/15)
+6. **Dependency Installation & Testing** (Subagent 12/15)
    ```
-   /subagent "Execute the application end-to-end. Test all major features manually. Document any remaining issues in KNOWN_ISSUES.md."
+   /subagent "Install all dependencies (pip install -r requirements.txt or npm install). Test that the main application actually runs without errors. Fix any import or dependency issues."
    ```
 
 7. **Quality Assurance** (Subagent 13/15)
@@ -66,7 +66,7 @@ Given a single-line product idea from the user, you must:
 
 9. **Final Verification** (Subagent 15/15)
    ```
-   /subagent "Perform final check: 1) Build succeeds 2) Tests pass 3) App runs 4) Documentation complete. Then echo 'DONE'."
+   /subagent "Perform final end-to-end test: 1) Install dependencies 2) Run main application 3) Execute tests 4) Verify all features work. Only echo 'DONE' if the application actually functions correctly."
    ```
 
 **MANDATORY: After subagent 15 OR completion, echo 'DONE' immediately.**

@@ -1,0 +1,51 @@
+🤖 Starting Slack Simple Webhook Server for Claude Autodev...
+📁 Base directory: /Users/horioshuuhei/Projects/claude-autodev
+🔗 Events endpoint: http://localhost:5003/slack/events
+⚡ Commands endpoint: http://localhost:5003/slack/commands
+🏥 Health check: http://localhost:5003/health
+🤖 Bot Token: xoxb-8904257995491-8...
+ * Serving Flask app 'slack_simple_server'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5003
+ * Running on http://192.168.4.149:5003
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 137-328-399
+127.0.0.1 - - [18/Jun/2025 17:53:16] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jun/2025 18:41:26] "POST /slack/events HTTP/1.1" 200 -
+ * Detected change in '/Users/horioshuuhei/Projects/claude-autodev/scripts/slack_socket_server.py', reloading
+🤖 Starting Slack Simple Webhook Server for Claude Autodev...
+📁 Base directory: /Users/horioshuuhei/Projects/claude-autodev
+🔗 Events endpoint: http://localhost:5003/slack/events
+⚡ Commands endpoint: http://localhost:5003/slack/commands
+🏥 Health check: http://localhost:5003/health
+🤖 Bot Token: xoxb-8904257995491-8...
+📥 Received Slack event from 127.0.0.1
+⚠️  Slack Signing Secret not configured, skipping signature verification
+✅ Slack signature verification passed
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 137-328-399
+ * Detected change in '/Users/horioshuuhei/Projects/claude-autodev/scripts/slack_simple_server.py', reloading
+🤖 Starting Slack Simple Webhook Server for Claude Autodev...
+📁 Base directory: /Users/horioshuuhei/Projects/claude-autodev
+🔗 Events endpoint: http://localhost:5003/slack/events
+⚡ Commands endpoint: http://localhost:5003/slack/commands
+🏥 Health check: http://localhost:5003/health
+🤖 Bot Token: xoxb-8904257995491-8...
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 137-328-399
+ * Detected change in '/Users/horioshuuhei/Projects/claude-autodev/scripts/slack_socket_server.py', reloading
+🤖 Starting Slack Simple Webhook Server for Claude Autodev...
+📁 Base directory: /Users/horioshuuhei/Projects/claude-autodev
+🔗 Events endpoint: http://localhost:5003/slack/events
+⚡ Commands endpoint: http://localhost:5003/slack/commands
+🏥 Health check: http://localhost:5003/health
+🤖 Bot Token: YOUR_SLACK_BOT_TOKEN...
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 137-328-399

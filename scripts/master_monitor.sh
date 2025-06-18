@@ -46,12 +46,16 @@ while true; do
                 # LINE通知送信
                 "$SCRIPT_DIR/send_line_notification.sh" "$project_name"
                 
-                # 完了リストに追加
-                echo "$project_name" >> "$LOGS_DIR/completed_projects.txt"
-                completed_projects="$completed_projects\n$project_name"
+                # 完了リストに追加（重複チェック付き）
+                if ! grep -q "^$project_name$" "$LOGS_DIR/completed_projects.txt" 2>/dev/null; then
+                    echo "$project_name" >> "$LOGS_DIR/completed_projects.txt"
+                    echo "$(date): $project_name completed and notified" >> "$LOGS_DIR/monitor.log"
+                else
+                    echo "$(date): $project_name already completed, skipping notification" >> "$LOGS_DIR/monitor.log"
+                fi
                 
-                # 詳細ログ保存
-                echo "$(date): $project_name completed" >> "$LOGS_DIR/monitor.log"
+                # メモリ内リストを更新
+                completed_projects=$(cat "$LOGS_DIR/completed_projects.txt" 2>/dev/null || echo "")
             fi
         fi
     done

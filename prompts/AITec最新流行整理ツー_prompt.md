@@ -72,7 +72,7 @@ Given a single-line product idea from the user, you must:
 **MANDATORY: After subagent 15 OR completion, echo 'DONE' immediately.**
 
 ## 💬 User Idea
-{{USER_IDEA}}
+Xから私のアカウントがリポスト、リツイートした投稿のみをピックアップしてそちらを整理してまとめるウェブアプリを作成してください。【主要機能】1. 日付ごとの管理   - 日に日に情報を追加していくため管理しやすいように日付ごとに格納   - カレンダービューで見返せるように2. やりたいことリスト   - Xの情報を見える形で3つほど最新のものからピックアップ   - やりたいことを忘れないための可視化機能3. トレンド分析   - AIやITの1週間くらいの最新の流行についてピックアップして整理   - 業界の動向を把握できるダッシュボード4. 整理機能   - 一日に何回もリポストするため工夫して整理   - カテゴリ分け、タグ付け、検索機能【技術要件】- フロントエンド: Next.js 15 + TypeScript + Tailwind CSS- バックエンド: Node.js + Express- データベース: PostgreSQL- 認証: NextAuth.js【API設定】XのAPIは使用制限にすぐかかってしまうため注意してください。無料APIティア（読み取り100回/月、投稿500回/月）のレートリミットを自動管理し、制限超過時には指数バックオフで再試行する機能も追加してください。APIキー:- TWITTER_API_KEY: Di9xfWIvuRO0Dz3kvijD8BI45- TWITTER_API_SECRET: Thpj0BAqf7uHuKH4a3E3rNCcA5gRYtFx8uQiQbO2qD4GUrtZyP- TWITTER_ACCESS_TOKEN: 1447819030509748232-8S64SWqDpHBD4Rq9s2FBBnHcd792Hq- TWITTER_ACCESS_SECRET: Wrae1fS2TAGH1nFpwoX8wa1OZOkiqjWrsQucS0eTuNrzc
 
 # ============================================================
 # End of prompt — the agent now starts its autonomous workflow

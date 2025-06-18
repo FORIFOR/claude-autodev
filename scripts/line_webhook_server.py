@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env /Users/horioshuuhei/Projects/claude-autodev/line_server_env/bin/python
 """
 LINE Webhook Server for bidirectional communication
 LINEからのメッセージを受信してプロジェクトの仕様変更に対応
@@ -27,8 +27,10 @@ LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
 def verify_signature(body, signature):
     """LINE Webhook署名検証"""
-    if not CHANNEL_SECRET:
-        return True  # 開発用（本番では必ず検証すること）
+    # 開発環境では署名検証をスキップ
+    if not CHANNEL_SECRET or CHANNEL_SECRET == "your_channel_secret_here":
+        print("⚠️  Channel Secret not configured, skipping signature verification")
+        return True
     
     hash = hmac.new(CHANNEL_SECRET.encode('utf-8'), body, hashlib.sha256).digest()
     expected_signature = base64.b64encode(hash).decode()
@@ -184,36 +186,55 @@ def process_line_message(message_text, reply_token):
 @app.route('/webhook', methods=['POST'])
 def webhook():
     """LINE Webhook エンドポイント"""
+    print(f"📥 Received webhook request from {request.remote_addr}")
+    
     # 署名検証
     signature = request.headers.get('X-Line-Signature', '')
     body = request.get_data()
     
+    print(f"📋 Request headers: {dict(request.headers)}")
+    print(f"📄 Request body length: {len(body)}")
+    
     if not verify_signature(body, signature):
+        print("❌ Signature verification failed")
         return jsonify({"error": "Invalid signature"}), 403
+    
+    print("✅ Signature verification passed")
     
     # イベント処理
     try:
-        events = json.loads(body.decode('utf-8'))['events']
+        events_data = json.loads(body.decode('utf-8'))
+        print(f"🔍 Parsed JSON: {events_data}")
+        events = events_data['events']
+        print(f"📨 Found {len(events)} events")
         
         for event in events:
+            print(f"🎯 Processing event: {event.get('type', 'unknown')}")
             if event['type'] == 'message' and event['message']['type'] == 'text':
                 user_id = event['source']['userId']
+                print(f"👤 User ID: {user_id}")
+                print(f"🎯 Expected User ID: {DESTINATION_USER_ID}")
                 
                 # 認証されたユーザーのみ処理
                 if user_id == DESTINATION_USER_ID:
                     message_text = event['message']['text']
                     reply_token = event['replyToken']
+                    print(f"💬 Processing message: {message_text}")
                     
                     # メッセージログ記録
                     log_entry = f"{datetime.now().isoformat()}: Received from {user_id}: {message_text}\n"
                     os.makedirs(LOGS_DIR, exist_ok=True)
                     with open(os.path.join(LOGS_DIR, "line_messages.log"), "a", encoding="utf-8") as f:
                         f.write(log_entry)
+                    print(f"📝 Logged message to {LOGS_DIR}/line_messages.log")
                     
                     # メッセージ処理
                     process_line_message(message_text, reply_token)
                 else:
+                    print(f"🚫 Unauthorized user: {user_id}")
                     send_line_reply(event['replyToken'], "🚫 認証されていないユーザーです。")
+            else:
+                print(f"⏭️ Skipping non-text event: {event.get('type', 'unknown')}")
         
         return jsonify({"status": "ok"}), 200
         
@@ -233,10 +254,10 @@ def health():
 if __name__ == '__main__':
     print("🌐 Starting LINE Webhook Server...")
     print(f"📁 Base directory: {BASE_DIR}")
-    print(f"🔗 Webhook URL: http://localhost:5000/webhook")
-    print(f"🏥 Health check: http://localhost:5000/health")
+    print(f"🔗 Webhook URL: http://localhost:5001/webhook")
+    print(f"🏥 Health check: http://localhost:5001/health")
     
     # ログディレクトリ作成
     os.makedirs(LOGS_DIR, exist_ok=True)
     
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

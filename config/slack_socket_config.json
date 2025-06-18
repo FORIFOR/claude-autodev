@@ -1,0 +1,16 @@
+{
+    "bot_token": "YOUR_SLACK_BOT_TOKEN",
+    "app_token": "YOUR_SLACK_APP_TOKEN",
+    "socket_mode": true,
+    "commands": {
+        "new": "claude new <project-name> <description>",
+        "modify": "claude modify <project-name> <changes>",
+        "projects": "claude projects",
+        "help": "claude help"
+    },
+    "usage": [
+        "@Claude Autodev claude new todo-app TODOアプリを作成",
+        "DM: claude projects",
+        "/claude new mobile-app 天気アプリ作成"
+    ]
+}

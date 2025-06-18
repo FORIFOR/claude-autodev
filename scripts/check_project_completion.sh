@@ -39,12 +39,13 @@ else
     echo "❌ README.md missing or empty"
 fi
 
-# 3. src/ ディレクトリに実際のコードファイルがある
-if [ -d "src" ] && [ "$(find src -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.java" -o -name "*.go" | wc -l)" -gt 0 ]; then
-    echo "✅ Source code files found in src/"
+# 3. ソースコードファイルがある（src/ディレクトリまたはルートディレクトリ）
+src_files=$(find . -maxdepth 2 -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.java" -o -name "*.go" | grep -v venv | grep -v __pycache__ | wc -l)
+if [ "$src_files" -gt 0 ]; then
+    echo "✅ Source code files found ($src_files files)"
     ((completion_criteria++))
 else
-    echo "❌ No source code files in src/"
+    echo "❌ No source code files found"
 fi
 
 # 4. Git コミットが少なくとも3つ以上ある（開発活動の証拠）
@@ -60,33 +61,50 @@ else
     echo "❌ No Git repository"
 fi
 
-# 5. "DONE" キーワードがRELEASE.mdまたは最新のGitコミットメッセージに含まれている
+# 5. "DONE" キーワードまたは完了を示すファイルが存在
 done_found=false
-if [ -f "RELEASE.md" ] && grep -q "DONE" "RELEASE.md"; then
+
+# RELEASE.mdで"DONE"またはプロダクション/完成を示すキーワード
+if [ -f "RELEASE.md" ] && (grep -qi "DONE\|production\|complete\|finished\|final" "RELEASE.md"); then
     done_found=true
 fi
 
+# 最新のGitコミットメッセージをチェック
 if [ -d ".git" ]; then
     latest_commit=$(git log -1 --pretty=format:"%s" 2>/dev/null || echo "")
-    if echo "$latest_commit" | grep -q "DONE"; then
+    if echo "$latest_commit" | grep -qi "DONE\|complete\|final\|finish"; then
         done_found=true
     fi
 fi
 
+# 完了を示すファイルの存在チェック
+if [ -f "DONE" ] || [ -f "COMPLETE" ] || [ -f "FINISHED" ]; then
+    done_found=true
+fi
+
 if $done_found; then
-    echo "✅ 'DONE' keyword found"
+    echo "✅ Completion indicator found"
     ((completion_criteria++))
 else
-    echo "❌ 'DONE' keyword not found"
+    echo "❌ No completion indicator found"
 fi
 
 # 判定結果
 echo "📊 Completion score: $completion_criteria/5"
 
-# 4つ以上の条件を満たせば完了とみなす
+# 基本完了判定（4/5以上）
 if [ $completion_criteria -ge 4 ]; then
-    echo "🎉 Project is considered COMPLETE"
-    exit 0
+    echo "📋 Basic completion criteria met. Running functionality validation..."
+    
+    # 実際の動作可能性をテスト
+    if "$SCRIPT_DIR/validate_project_functionality.sh" "$PROJECT_NAME" >/dev/null 2>&1; then
+        echo "🎉 Project is FUNCTIONALLY COMPLETE and ready for use"
+        exit 0
+    else
+        echo "⚠️  Project files exist but functionality validation failed"
+        echo "📝 This indicates the project may not actually work as intended"
+        exit 1
+    fi
 else
     echo "⏳ Project is still IN PROGRESS"
     exit 1
